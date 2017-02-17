@@ -1,0 +1,285 @@
+package com.mudtoperator.fragments;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.mudtoperator.R;
+import com.mudtoperator.Singleton;
+import com.mudtoperator.dialogs.CustomDialog;
+import com.mudtoperator.objs.DetailObj;
+import com.mudtoperator.objs.MudObj;
+import com.mudtoperator.utils.ConnectToServer;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class ViajeDetailFragment extends Fragment implements View.OnClickListener {
+
+    private int lay;
+    private MudObj mudObj;
+    private ImageView user_pic;
+    private TextView user_name, tel, date, hour, loc, unid_a, unid_b, caps, piso, have, desc, date_b, hour_b, loc_b,
+            dist, piso_b, have_b, precio, precioHint;
+    private Button initPros;
+    private DetailObj detailObj;
+    private String title;
+    private LinearLayout telLay;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        lay = bundle.getInt("lay");
+        mudObj = (MudObj)bundle.getSerializable("mudObj");
+        title = bundle.getString("title");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Singleton.setCurrentFragment(this);
+
+        Singleton.getActionButon().setVisibility(View.INVISIBLE);
+        Singleton.getActionText().setText(title);
+        Singleton.getMenuBtn().setImageResource(R.drawable.ic_back);
+        Singleton.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, getActivity().findViewById(R.id.left_drawer));
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.detail_frag, container, false);
+
+        user_pic = (ImageView)rootView.findViewById(R.id.user_pic);
+
+        user_name = (TextView)rootView.findViewById(R.id.user_name);
+        tel = (TextView)rootView.findViewById(R.id.tel);
+        date = (TextView)rootView.findViewById(R.id.date);
+        hour = (TextView)rootView.findViewById(R.id.hour);
+        loc = (TextView)rootView.findViewById(R.id.loc);
+        unid_a = (TextView)rootView.findViewById(R.id.unid_a);
+        unid_b = (TextView)rootView.findViewById(R.id.unid_b);
+        caps = (TextView)rootView.findViewById(R.id.caps);
+        piso = (TextView)rootView.findViewById(R.id.piso);
+        have = (TextView)rootView.findViewById(R.id.have);
+        desc = (TextView)rootView.findViewById(R.id.desc);
+        date_b = (TextView)rootView.findViewById(R.id.date_b);
+        hour_b = (TextView)rootView.findViewById(R.id.hour_b);
+        loc_b = (TextView)rootView.findViewById(R.id.loc_b);
+        dist = (TextView)rootView.findViewById(R.id.dist);
+        piso_b = (TextView)rootView.findViewById(R.id.piso_b);
+        have_b = (TextView)rootView.findViewById(R.id.have_b);
+        precio = (TextView)rootView.findViewById(R.id.precio);
+        precioHint = (TextView)rootView.findViewById(R.id.precioHint);
+
+        initPros = (Button)rootView.findViewById(R.id.initPros);
+        initPros.setOnClickListener(this);
+        if(title.contains("Solicitud")) {
+            initPros.setText(getResources().getString(R.string.acp_sol));
+            precioHint.setText("Precio");
+        } else
+            precioHint.setText(Singleton.getMainActivity().getResources().getText(R.string.aprox));
+
+        telLay = (LinearLayout)rootView.findViewById(R.id.tel_lay);
+        telLay.setOnClickListener(this);
+
+        initConnection();
+
+        return rootView;
+    }
+
+    private void initConnection(){
+        Singleton.showLoadDialog(getFragmentManager());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("MudanzaFolioServicio", mudObj.MudanzaFolioServicio);
+            Object[] objs = new Object[]{"GetMudanzaDetalle", 3, this, jsonObject};
+            ConnectToServer connectToServer = new ConnectToServer(objs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getResponse(String result) {
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONObject DetalleMudanza = jsonObject.getJSONObject("DetalleMudanza");
+            detailObj = new DetailObj();
+            detailObj.ClienteFoto = DetalleMudanza.getString("ClienteFoto");
+            detailObj.ClienteId = DetalleMudanza.getString("ClienteId");
+            detailObj.ClienteNombre = DetalleMudanza.getString("ClienteNombre");
+            detailObj.ClienteTelefono = DetalleMudanza.getString("ClienteTelefono");
+            detailObj.MudanzaCosto = DetalleMudanza.getString("MudanzaCosto");
+            detailObj.MudanzaDescripcionMobiliario = DetalleMudanza.getString("MudanzaDescripcionMobiliario");
+            detailObj.MudanzaDireccionDescarga = DetalleMudanza.getString("MudanzaDireccionDescarga");
+            detailObj.MudanzaElevadorCargaCargar = DetalleMudanza.getInt("MudanzaElevadorCargaCargar");
+            detailObj.MudanzaEstatusServicio = DetalleMudanza.getString("MudanzaEstatusServicio");
+            detailObj.MudanzaFechaSolicitud = DetalleMudanza.getString("MudanzaFechaSolicitud");
+            detailObj.MudanzaFolioServicio = DetalleMudanza.getString("MudanzaFolioServicio");
+            detailObj.MudanzaHoraSolicitud = DetalleMudanza.getString("MudanzaHoraSolicitud");
+            detailObj.MudanzaPisoDescarga = DetalleMudanza.getString("MudanzaPisoDescarga");
+            detailObj.TipoUnidadDescrip = DetalleMudanza.getString("TipoUnidadDescrip");
+            detailObj.UnidadPlacas = DetalleMudanza.getString("UnidadPlacas");
+            detailObj.MudanzaDireccionCarga = DetalleMudanza.getString("MudanzaDireccionCarga");
+            detailObj.MudanzaPisoCarga = DetalleMudanza.getString("MudanzaPisoCarga");
+            detailObj.MudanzaFechaTentativaDescarga = DetalleMudanza.getString("MudanzaFechaTentativaDescarga");
+            detailObj.MudanzaHoraTentativaDescarga = DetalleMudanza.getString("MudanzaHoraTentativaDescarga");
+            detailObj.MudanzaDistanciaAproximada = DetalleMudanza.getString("MudanzaDistanciaAproximada");
+            detailObj.MudanzaDirCarLatLong = DetalleMudanza.getString("MudanzaDirCarLatLong");
+            detailObj.MudanzaDirDesLatLong = DetalleMudanza.getString("MudanzaDirDesLatLong");
+
+            fillViews();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Singleton.dissmissLoad();
+    }
+
+    private void fillViews(){
+        user_name.setText(detailObj.ClienteNombre);
+        tel.setText(detailObj.ClienteTelefono);
+        date.setText(detailObj.MudanzaFechaSolicitud);
+        hour.setText(detailObj.MudanzaHoraSolicitud);
+        loc.setText(detailObj.MudanzaDireccionCarga);
+        unid_a.setText("Unidad");
+        unid_b.setText(detailObj.UnidadPlacas);
+        caps.setText(detailObj.TipoUnidadDescrip);
+        piso.setText(detailObj.MudanzaPisoCarga);
+        have.setText(getElevator(0));
+        desc.setText(detailObj.MudanzaDescripcionMobiliario);
+        date_b.setText(detailObj.MudanzaFechaTentativaDescarga);
+        hour_b.setText(detailObj.MudanzaHoraTentativaDescarga);
+        loc_b.setText(detailObj.MudanzaDireccionDescarga);
+        dist.setText("Distancia "+detailObj.MudanzaDistanciaAproximada);
+        piso_b.setText(detailObj.MudanzaPisoDescarga);
+        have_b.setText(getElevator(detailObj.MudanzaElevadorCargaCargar));
+        precio.setText(detailObj.MudanzaCosto);
+
+        ProgressBar progressBar = new ProgressBar(getContext());
+        Singleton.loadImage(detailObj.ClienteFoto, user_pic, progressBar);
+    }
+
+    private String getElevator(int arg){
+        if(arg == 0)
+            return "No tiene";
+        else
+            return "Si tiene";
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case R.id.initPros:
+                if(title.contains("Detalle")) {
+                    if(mudObj.MudanzaEstatusServicio != 6)
+                        initStatusConnection();
+                    else
+                        showCustomDialog("No puedes iniciar",
+                                "Valida que no tengas una mudanza iniciada o que la fecha no sea próxima",
+                                "Continuar");
+                    /*if(Singleton.getIsActive() != null) {
+                        if(Singleton.getIsActive().idMud.equals(detailObj.MudanzaFolioServicio))
+                            initStatusConnection();
+                        else
+                            showCustomDialog("Espera un momento", "Tienes una mudanza activa y no puedes comenzar otra", "Aceptar");
+                    } else
+                        showCustomDialog("Espera un momento", "Tienes una mudanza activa y no puedes comenzar otra", "Aceptar");*/
+                } else if(title.contains("Solicitud")){
+                    initAceptConnection();
+                }
+                break;
+            case R.id.tel_lay:
+                callIntent(detailObj.ClienteTelefono);
+                break;
+        }
+    }
+
+    private void initStatusConnection(){
+        Singleton.showLoadDialog(getFragmentManager());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("MudanzaFolioServicio", detailObj.MudanzaFolioServicio);
+            jsonObject.put("MudanzaEstatusServicio", 1);
+
+            //JSONObject jsonObject1 = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            JSONObject jsonObject0 = new JSONObject();
+            jsonObject0.put("LocalizacionLatitud", 19.434200286865);
+            jsonObject0.put("LocalizacionLongitud", -99.138603210449);
+            jsonArray.put(jsonObject0);
+            //jsonObject1.put("cGeolocations", jsonArray);
+
+            jsonObject.put("cGeolocations", jsonArray);
+            Object[] objs = new Object[]{"SetGeolocation", 10, this, jsonObject};
+            ConnectToServer connectToServer = new ConnectToServer(objs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getStatusResponse(String result) {
+        Singleton.dissmissLoad();
+        initProcess();
+    }
+
+    public void initProcess(){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("mudObj", mudObj);
+        bundle.putSerializable("detailObj", detailObj);
+        bundle.putInt("lay", lay);
+        ProcessFragment processFragment = new ProcessFragment();
+        processFragment.setArguments(bundle);
+        Singleton.setCurrentFragment(processFragment);
+        getFragmentManager().beginTransaction()
+                .replace(lay, processFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void showCustomDialog(String title, String body, String action){
+        CustomDialog custoDialog = CustomDialog.newInstance(title, body, action);
+        custoDialog.setCancelable(true);
+        custoDialog.show(getFragmentManager(), "custom dialog");
+    }
+
+    private void callIntent(String tel){
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + tel));
+        startActivity(intent);
+    }
+
+    private void initAceptConnection(){
+        Singleton.showLoadDialog(getFragmentManager());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("MudanzaFolioServicio", detailObj.MudanzaFolioServicio);
+            jsonObject.put("OperadorGAMId", Singleton.getUSerObj().GUID);
+            Object[] objs = new Object[]{"AcceptService", 12, this, jsonObject};
+            ConnectToServer connectToServer = new ConnectToServer(objs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getAceptResponse(String reponse){
+        Singleton.dissmissLoad();
+        getActivity().onBackPressed();
+    }
+
+}
