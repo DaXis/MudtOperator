@@ -34,6 +34,8 @@ import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -378,6 +380,12 @@ public class Singleton extends Application implements GpsConfiguration.OnGpsLoca
 
     public static ActiveObj getIsActive(){
         return isActive;
+    }
+
+    public static TimeZone getCurrentTZ(){
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+        return tz;
     }
 
 }

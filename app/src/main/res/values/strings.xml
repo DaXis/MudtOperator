@@ -23,12 +23,12 @@
     <string name="menu_about">Acerca de</string>
     <string name="menu_close">Cerrar Sesión</string>
     <string name="resum">Resúmen de mudanza</string>
-    <string name="detail_ubc">Ubicación de recogida</string>
+    <string name="detail_ubc">Origen</string>
     <string name="piso">Piso del inmueble</string>
     <string name="elevador">Elevador de carga</string>
     <string name="desc">Descripción de mobiliario</string>
-    <string name="detail_ubc_b">Ubicación de descarga</string>
-    <string name="aprox">COSTO APROXIMADO</string>
+    <string name="detail_ubc_b">Destino</string>
+    <string name="aprox">COSTO</string>
     <string name="btn_init">INICIAR PROCESO</string>
     <string name="hist_muds">HISTORIAL DE MUDANZAS</string>
     <string name="MAP_API">AIzaSyDpbgp6w7PXROQzRnZX1P1Sd_9P3V85ucw</string>

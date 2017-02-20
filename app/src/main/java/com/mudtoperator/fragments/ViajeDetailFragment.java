@@ -92,7 +92,7 @@ public class ViajeDetailFragment extends Fragment implements View.OnClickListene
         initPros.setOnClickListener(this);
         if(title.contains("Solicitud")) {
             initPros.setText(getResources().getString(R.string.acp_sol));
-            precioHint.setText("Precio");
+            precioHint.setText(Singleton.getMainActivity().getResources().getText(R.string.aprox));
         } else
             precioHint.setText(Singleton.getMainActivity().getResources().getText(R.string.aprox));
 
@@ -170,6 +170,9 @@ public class ViajeDetailFragment extends Fragment implements View.OnClickListene
         piso_b.setText(detailObj.MudanzaPisoDescarga);
         have_b.setText(getElevator(detailObj.MudanzaElevadorCargaCargar));
         precio.setText(detailObj.MudanzaCosto);
+
+        if(mudObj.MudanzaEstatusServicio == 6)
+            initPros.setVisibility(View.INVISIBLE);
 
         ProgressBar progressBar = new ProgressBar(getContext());
         Singleton.loadImage(detailObj.ClienteFoto, user_pic, progressBar);

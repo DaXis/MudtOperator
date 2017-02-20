@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -46,6 +47,10 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class ProcessFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
@@ -53,7 +58,7 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
     private MudObj mudObj;
     private DetailObj detailObj;
     private ImageView user_pic, current, pic1, pic2, transparentImageView;
-    private TextView user_name, tel, ubic_a, ubic_b;
+    private TextView user_name, tel, ubic_a, ubic_b, hour_a, hour_b, hour_c, hour_d, hour_e, currentTV;
     private Button endMud;
     private LinearLayout init_process, second_step, trhid_step, fourth_step, fifth_step, tel_lay;
     private static final int ACTION_TAKE_PHOTO = 1, ACTION_GET_CONTENT = 2;
@@ -108,6 +113,16 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
         ubic_b = (TextView)rootView.findViewById(R.id.ubic_b);
         ubic_b.setText(detailObj.MudanzaDireccionDescarga);
 
+        hour_a = (TextView)rootView.findViewById(R.id.hour_a);
+        hour_a.setText(detailObj.MudanzaHoraSolicitud);
+
+        hour_b = (TextView)rootView.findViewById(R.id.hour_b);
+        hour_c = (TextView)rootView.findViewById(R.id.hour_c);
+        hour_d = (TextView)rootView.findViewById(R.id.hour_d);
+
+        hour_e = (TextView)rootView.findViewById(R.id.hour_e);
+        hour_e.setText(detailObj.MudanzaHoraTentativaDescarga);
+
         endMud = (Button)rootView.findViewById(R.id.endMud);
         endMud.setOnClickListener(this);
 
@@ -143,16 +158,22 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
                 initTakePic(1, mudObj.MudanzaFolioServicio+"_3");
                 break;
             case R.id.second_step:
-                if(process == 1)
+                if(process == 1) {
+                    currentTV = hour_b;
                     initConnection(2);
+                }
                 break;
             case R.id.trhid_step:
-                if(process == 2)
+                if(process == 2) {
+                    currentTV = hour_c;
                     initConnection(3);
+                }
                 break;
             case R.id.fourth_step:
-                if(process == 3)
+                if(process == 3) {
+                    currentTV = hour_d;
                     initConnection(4);
+                }
                 break;
             case R.id.tel_lay:
                 callIntent(detailObj.ClienteTelefono);
@@ -200,6 +221,7 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
     }
 
     public void getResponse(String result) {
+        onUIThread(currentTV, System.currentTimeMillis());
         Singleton.dissmissLoad();
         process++;
     }
@@ -446,4 +468,37 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
         LatLng latLng = new LatLng(Singleton.getLatitud(), Singleton.getLongitude());
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
     }
+
+    private void onUIThread(final TextView tv, final long time){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv.setText(getDateString(time));
+            }
+        });
+    }
+
+    /*private Date getDateFromString(String fecha){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = null;
+        try {
+            date = format.parse(fecha);
+            //System.out.println(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }*/
+
+    public static String getDateString(long time){
+        String date = "";
+        //SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm aa");
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        sdf.setTimeZone(Singleton.getCurrentTZ());
+        date = sdf.format(new Date(time));
+        //date = new SimpleDateFormat("dd 'de' MMMM',' hh:mm a").format(new Date(time));
+        return date;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.mudtoperator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -235,7 +236,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             break;
             case R.id.menu_close:
                 openCloseDrawer();
-                finish();
+                //finish();
+                mainIntent();
             break;
         }
     }
@@ -266,10 +268,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onBackPressed(){
         if(Singleton.getCurrentFragment().getClass() == HistorialFragment.class)
             initMainFragment();
-        if(Singleton.getCurrentFragment().getClass() == SolicitudFragment.class)
+        else if(Singleton.getCurrentFragment().getClass() == SolicitudFragment.class)
             initMainFragment();
+        else if(Singleton.getCurrentFragment().getClass() == AboutFragment.class)
+            initMainFragment();
+        else if(Singleton.getCurrentFragment().getClass() == ViajeDetailFragment.class)
+            super.onBackPressed();
         else
             super.onBackPressed();
+    }
+
+    private void mainIntent(){
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
 }
