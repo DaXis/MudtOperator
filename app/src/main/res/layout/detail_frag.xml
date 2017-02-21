@@ -200,12 +200,13 @@
 
                     </LinearLayout>
 
-                    <FrameLayout
+                    <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"/>
+                        android:layout_height="2dp"
+                        android:src="@drawable/dashed_line"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="20dp"
+                        android:layerType="software"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -283,12 +284,72 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"/>
 
-                    <FrameLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@color/accent_color">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/mid_izqa"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/mid_izqa"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentLeft="true"/>
+
+                            <ImageView
+                                android:id="@+id/mid_dera"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/mid_dera"
+                                android:layout_gravity="right"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentRight="true" />
+
+                            <FrameLayout
+                                android:id="@+id/line"
+                                android:layout_width="wrap_content"
+                                android:layout_height="27dp"
+                                android:background="@color/text_icons"
+                                android:layout_toRightOf="@+id/mid_izqa"
+                                android:layout_toLeftOf="@+id/mid_dera"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentTop="true">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/dashed_line"
+                                    android:layerType="software"
+                                    android:layout_gravity="center"/>
+
+                            </FrameLayout>
+
+                            <ImageView
+                                android:id="@+id/mid_izqb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/mid_izqb"
+                                android:layout_below="@+id/mid_izqa"
+                                android:layout_alignParentLeft="true"/>
+
+                            <ImageView
+                                android:id="@+id/mid_derb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/mid_derb"
+                                android:layout_gravity="right"
+                                android:layout_below="@+id/mid_dera"
+                                android:layout_alignParentRight="true"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
