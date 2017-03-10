@@ -12,6 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.mudtoperator.objs.TokenObj;
+import com.mudtoperator.objs.UserObj;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final int DURACION_SPLASH = 3000; // 3 segundos
@@ -32,7 +38,6 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= Build.VERSION_CODES.M)
             checkGPSPermission();
-            //checkWritePermission();
     }
 
 
@@ -128,16 +133,22 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void onUIThread(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new Handler().postDelayed(new Runnable(){
-                    public void run(){
-                        splash_login_lay.setVisibility(View.VISIBLE);
-                    };
-                }, DURACION_SPLASH);
-            }
-        });
+        if(Singleton.getSettings().getBoolean("login_flag", false)){
+            parseLogin();
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            splash_login_lay.setVisibility(View.VISIBLE);
+                        }
+
+                        ;
+                    }, DURACION_SPLASH);
+                }
+            });
+        }
     }
 
     @Override
@@ -148,4 +159,37 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                 break;
         }
     }
+
+    private void parseLogin(){
+        try {
+            JSONObject jsonObject = new JSONObject(Singleton.getSettings().getString("token_json", ""));
+            TokenObj tokenObj = new TokenObj();
+            tokenObj.access_token = jsonObject.getString("access_token");
+            tokenObj.scope = jsonObject.getString("scope");
+            tokenObj.refresh_token = jsonObject.getString("refresh_token");
+            tokenObj.user_guid = jsonObject.getString("user_guid").replace("    ","");
+            Singleton.setTokenObj(tokenObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Singleton.dissmissLoad();
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(Singleton.getSettings().getString("login_json", ""));
+            if(jsonObject.has("SDTRestLogin")){
+                JSONObject SDTRestLogin = jsonObject.getJSONObject("SDTRestLogin");
+                UserObj userObj = new UserObj();
+                userObj.Error = SDTRestLogin.getString("Error");
+                userObj.Foto = SDTRestLogin.getString("Foto");
+                userObj.GUID = SDTRestLogin.getString("GUID");
+                userObj.NombreCompleto = SDTRestLogin.getString("NombreCompleto");
+                userObj.Rol = SDTRestLogin.getString("Rol");
+                Singleton.setUserObj(userObj);
+                mainIntent();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Singleton.dissmissLoad();
+        }
+    }
+
 }

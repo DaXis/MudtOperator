@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mudtoperator.R;
 import com.mudtoperator.Singleton;
 import com.mudtoperator.dialogs.CustomDialog;
@@ -24,6 +25,8 @@ import com.mudtoperator.utils.ConnectToServer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DecimalFormat;
 
 public class ViajeDetailFragment extends Fragment implements View.OnClickListener {
 
@@ -190,9 +193,14 @@ public class ViajeDetailFragment extends Fragment implements View.OnClickListene
         switch(view.getId()){
             case R.id.initPros:
                 if(title.contains("Detalle")) {
-                    if(mudObj.MudanzaEstatusServicio != 6)
-                        initStatusConnection();
-                    else
+                    if(mudObj.MudanzaEstatusServicio != 6) {
+                        if(CalculationByDistance() <= 100)
+                            initStatusConnection();
+                        else
+                            showCustomDialog("No puedes iniciar",
+                                    "Debes estar por lo menos a 100 metros de distancia del punto de recogida para iniciar la mudanza",
+                                    "Continuar");
+                    } else
                         showCustomDialog("No puedes iniciar",
                                 "Valida que no tengas una mudanza iniciada o que la fecha no sea próxima",
                                 "Continuar");
@@ -283,6 +291,49 @@ public class ViajeDetailFragment extends Fragment implements View.OnClickListene
     public void getAceptResponse(String reponse){
         Singleton.dissmissLoad();
         getActivity().onBackPressed();
+    }
+
+    public double CalculationByDistance() {
+        int Radius=6371;//radius of earth in Km
+        /*double lat1 = StartP.getLatitudeE6()/1E6;
+        double lat2 = EndP.getLatitudeE6()/1E6;
+        double lon1 = StartP.getLongitudeE6()/1E6;
+        double lon2 = EndP.getLongitudeE6()/1E6;*/
+
+        LatLng latLng = getLatLon(detailObj.MudanzaDirCarLatLong);
+
+        double lat1 = latLng.latitude;
+        double lon1 = latLng.longitude;
+
+        double lat2 = Singleton.getLatitud();
+        double lon2 = Singleton.getLongitude();
+
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLon = Math.toRadians(lon2-lon1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult= Radius*c;
+        //double km=valueResult/1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        //int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult*100;
+        Integer meterInDec = Integer.valueOf(newFormat.format(meter));
+        //Log.i("Radius Value",""+valueResult+"   KM  "+kmInDec+" Meter   "+ meterInDec);
+
+        //return Radius * c;
+        return meterInDec;
+    }
+
+
+    private LatLng getLatLon(String arg){
+        String[] aux = arg.split("[,]");
+        String aux0 =  aux[0].replace("null", "");
+        String aux1 =  aux[1].replace("null", "");
+
+        LatLng latLng = new LatLng(Double.parseDouble(aux0), Double.parseDouble(aux1));
+        return latLng;
     }
 
 }

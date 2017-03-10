@@ -7,11 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +27,13 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mudtoperator.R;
 import com.mudtoperator.Singleton;
@@ -47,6 +51,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -266,7 +271,13 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
                 try {
                     f = setUpPhotoFile(name);
                     img_path = f.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                    if(Singleton.getCurrentApiVersion() < Build.VERSION_CODES.N)
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                    else {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() +
+                                ".provider", f);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     f = null;
@@ -500,5 +511,21 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
         //date = new SimpleDateFormat("dd 'de' MMMM',' hh:mm a").format(new Date(time));
         return date;
     }
+
+    /*private void centerMapBetweenAlotoffPoints(){
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(srcP);
+        for (int i = 0; i < points.size(); i++) {
+            builder.include(points.get(i).getPosition());
+        }
+
+        LatLngBounds bounds = builder.build();
+
+        int padding = 80;
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        map.moveCamera(cu);
+        map.animateCamera(cu);
+    }*/
 
 }

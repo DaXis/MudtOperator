@@ -115,6 +115,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 tokenObj.refresh_token = jsonObject.getString("refresh_token");
                 tokenObj.user_guid = jsonObject.getString("user_guid").replace("    ","");
                 Singleton.setTokenObj(tokenObj);
+                Singleton.saveSettings("token_json", result);
                 initLoginData();
             }
         } catch (JSONException e) {
@@ -150,6 +151,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 userObj.NombreCompleto = SDTRestLogin.getString("NombreCompleto");
                 userObj.Rol = SDTRestLogin.getString("Rol");
                 Singleton.setUserObj(userObj);
+                Singleton.saveSettings("login_json", result);
+                Singleton.saveSettings("login_flag", true);
                 Singleton.dissmissLoad();
                 Singleton.getMainActivity().initMainFragment();
             }

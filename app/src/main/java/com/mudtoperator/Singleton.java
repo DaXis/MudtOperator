@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -72,6 +73,7 @@ public class Singleton extends Application implements GpsConfiguration.OnGpsLoca
     private static GpsConfiguration gps;
     private static double latitude, longitude;
     private static ActiveObj isActive;
+    private static int currentapiVersion;
 
     //----------------------
     private static final int CORE_POOL_SIZE = 5;
@@ -104,6 +106,7 @@ public class Singleton extends Application implements GpsConfiguration.OnGpsLoca
 
     public void onCreate() {
         super.onCreate();
+        currentapiVersion = Build.VERSION.SDK_INT;
         baseUrl = getResources().getString(R.string.base_url);
         image_url = getResources().getString(R.string.image_url);
         initPreferences();
@@ -386,6 +389,25 @@ public class Singleton extends Application implements GpsConfiguration.OnGpsLoca
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
         return tz;
+    }
+
+    public static void saveSettings(String arg0, String arg1){
+        editor.putString(arg0, arg1);
+        editor.commit();
+    }
+
+    public static void saveSettings(String arg0, int arg1){
+        editor.putInt(arg0, arg1);
+        editor.commit();
+    }
+
+    public static void saveSettings(String arg0, boolean arg1){
+        editor.putBoolean(arg0, arg1);
+        editor.commit();
+    }
+
+    public static int getCurrentApiVersion(){
+        return currentapiVersion;
     }
 
 }

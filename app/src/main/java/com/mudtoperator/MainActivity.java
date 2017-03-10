@@ -227,16 +227,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 openCloseDrawer();
                 initSolicitudFragment();
             break;
-            case R.id.menu_guia:
+            /*case R.id.menu_guia:
                 openCloseDrawer();
-            break;
+            break;*/
             case R.id.menu_about:
                 openCloseDrawer();
                 initAboutFragment();
             break;
             case R.id.menu_close:
                 openCloseDrawer();
-                //finish();
+                Singleton.saveSettings("login_json", "");
+                Singleton.saveSettings("login_flag", false);
                 mainIntent();
             break;
         }
@@ -256,8 +257,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         menu_his.setOnClickListener(this);
         LinearLayout menu_sol = (LinearLayout)findViewById(R.id.menu_sol);
         menu_sol.setOnClickListener(this);
-        LinearLayout menu_guia = (LinearLayout)findViewById(R.id.menu_guia);
-        menu_guia.setOnClickListener(this);
+        /*LinearLayout menu_guia = (LinearLayout)findViewById(R.id.menu_guia);
+        menu_guia.setOnClickListener(this);*/
         LinearLayout menu_about = (LinearLayout)findViewById(R.id.menu_about);
         menu_about.setOnClickListener(this);
         LinearLayout menu_close = (LinearLayout)findViewById(R.id.menu_close);
