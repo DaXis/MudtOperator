@@ -96,8 +96,11 @@ public class ViajeDetailFragment extends Fragment implements View.OnClickListene
         if(title.contains("Solicitud")) {
             initPros.setText(getResources().getString(R.string.acp_sol));
             precioHint.setText(Singleton.getMainActivity().getResources().getText(R.string.aprox));
-        } else
+        } else {
             precioHint.setText(Singleton.getMainActivity().getResources().getText(R.string.aprox));
+            Singleton.getActionText().setText("Solicitud");
+            initPros.setVisibility(View.GONE);
+        }
 
         telLay = (LinearLayout)rootView.findViewById(R.id.tel_lay);
         telLay.setOnClickListener(this);
@@ -176,6 +179,8 @@ public class ViajeDetailFragment extends Fragment implements View.OnClickListene
 
         if(mudObj.MudanzaEstatusServicio == 6)
             initPros.setVisibility(View.INVISIBLE);
+        else
+            initPros.setVisibility(View.VISIBLE);
 
         ProgressBar progressBar = new ProgressBar(getContext());
         Singleton.loadImage(detailObj.ClienteFoto, user_pic, progressBar);
