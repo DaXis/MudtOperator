@@ -209,11 +209,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(Singleton.getCurrentFragment().getClass() == ProcessFragment.class)
                     onBackPressed();
                 if(Singleton.getCurrentFragment().getClass() == HistorialFragment.class)
-                    initMainFragment();
+                    openCloseDrawer();
+                    //initMainFragment();
                 if(Singleton.getCurrentFragment().getClass() == SolicitudFragment.class)
-                    initMainFragment();
+                    openCloseDrawer();
+                    //initMainFragment();
                 if(Singleton.getCurrentFragment().getClass() == AboutFragment.class)
-                    onBackPressed();
+                    openCloseDrawer();
+                    //onBackPressed();
                 break;
             case R.id.menu_prox:
                 openCloseDrawer();

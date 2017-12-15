@@ -359,6 +359,9 @@ public class ConnectToServer {
             case 12:
                 ((ViajeDetailFragment) o).getAceptResponse(result);
                 break;
+            case 13:
+                ((ProcessFragment) o).getLatLonResponse(result);
+                break;
         }
     }
 

@@ -56,6 +56,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
@@ -73,6 +76,8 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
     private ScrollView mainScrollView;
     private SupportMapFragment map;
     private GoogleMap googleMap;
+    private static final long TIME = TimeUnit.SECONDS.toMillis(5);
+    private Timer timer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,18 +171,21 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
                 if(process == 1) {
                     currentTV = hour_b;
                     initConnection(2);
+                    initLoop();
                 }
                 break;
             case R.id.trhid_step:
                 if(process == 2) {
                     currentTV = hour_c;
                     initConnection(3);
+                    stopLoop();
                 }
                 break;
             case R.id.fourth_step:
                 if(process == 3) {
                     currentTV = hour_d;
                     initConnection(4);
+                    stopLoop();
                 }
                 break;
             case R.id.tel_lay:
@@ -510,6 +518,43 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
         date = sdf.format(new Date(time));
         //date = new SimpleDateFormat("dd 'de' MMMM',' hh:mm a").format(new Date(time));
         return date;
+    }
+
+    private void initLoop(){
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            synchronized public void run() {
+                sendLatLon();
+            }
+        }, 0, TIME);
+    }
+
+    private void stopLoop(){
+        timer.cancel();
+    }
+
+    private void sendLatLon(){
+        Singleton.showLoadDialog(getFragmentManager());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("MudanzaFolioServicio", detailObj.MudanzaFolioServicio);
+            jsonObject.put("MudanzaEstatusServicio", detailObj.MudanzaFolioServicio);
+
+            JSONArray jsonArray = new JSONArray();
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("LocalizacionLatitud", Singleton.getLatitud());
+            jsonObject1.put("LocalizacionLongitud", Singleton.getLongitude());
+            jsonArray.put(jsonObject1);
+
+            jsonObject.put("cGeolocations", detailObj.MudanzaFolioServicio);
+            Object[] objs = new Object[]{"SetGeolocation", 13, this, jsonObject};
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getLatLonResponse(String result) {
+
     }
 
     /*private void centerMapBetweenAlotoffPoints(){

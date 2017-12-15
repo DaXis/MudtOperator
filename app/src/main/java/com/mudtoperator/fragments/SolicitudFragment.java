@@ -50,7 +50,7 @@ public class SolicitudFragment extends Fragment implements View.OnClickListener 
 
         Singleton.getActionButon().setVisibility(View.INVISIBLE);
         Singleton.getActionText().setText("Solicitudes");
-        //Singleton.getMenuBtn().setImageResource(R.drawable.ic_back);
+        Singleton.getMenuBtn().setImageResource(R.drawable.ic_menu);
         Singleton.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, getActivity().findViewById(R.id.left_drawer));
     }
 
@@ -78,9 +78,14 @@ public class SolicitudFragment extends Fragment implements View.OnClickListener 
 
     private void initConnection(){
         Singleton.showLoadDialog(getFragmentManager());
-        JSONObject jsonObject = new JSONObject();
-        Object[] objs = new Object[]{"GetMudanzaPendienteListado", 5, this, jsonObject};
-        ConnectToServer connectToServer = new ConnectToServer(objs);
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("OperadorGAMId", Singleton.getUSerObj().GUID);
+            Object[] objs = new Object[]{"GetMudanzaPendienteListado", 5, this, jsonObject};
+            ConnectToServer connectToServer = new ConnectToServer(objs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getResponse(String result) {
