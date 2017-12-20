@@ -559,7 +559,7 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
     }
 
     private void sendLatLon(){
-        Singleton.showLoadDialog(getFragmentManager());
+        //Singleton.showLoadDialog(getFragmentManager());
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("MudanzaFolioServicio", detailObj.MudanzaFolioServicio);
@@ -579,7 +579,7 @@ public class ProcessFragment extends Fragment implements View.OnClickListener, O
     }
 
     public void getLatLonResponse(String result) {
-
+        Log.d("send lat lon result", result);
     }
 
     /*private void centerMapBetweenAlotoffPoints(){
