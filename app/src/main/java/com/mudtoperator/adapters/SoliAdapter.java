@@ -108,3 +108,5 @@ public class SoliAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 }
+
+//cambio
