@@ -72,14 +72,15 @@
 
         </LinearLayout>
 
-        <Button
+        <com.mudtoperator.custom.CustomButton
             android:id="@+id/info"
             android:layout_width="0dp"
             android:layout_weight="0.3"
             android:layout_height="40dp"
-            android:background="@drawable/wth_btn"
-            android:textColor="@color/accent_color"
-            android:text="@string/sol_btn"/>
+            android:background="@drawable/orange_btn"
+            android:textColor="@color/text_icons"
+            android:text="@string/info_row"
+            android:textAllCaps="false"/>
 
     </LinearLayout>
 

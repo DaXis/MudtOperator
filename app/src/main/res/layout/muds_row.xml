@@ -81,6 +81,7 @@
         android:layout_height="40dp"
         android:text="@string/info_row"
         android:background="@drawable/btn_selector"
-        android:textColor="@color/primary_color"/>
+        android:textColor="@color/primary_color"
+        android:textAllCaps="false"/>
 
 </LinearLayout>

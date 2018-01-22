@@ -98,6 +98,11 @@ public class MudsAdapter extends BaseAdapter {
             }
         }
 
+        if(fragment.getClass() == HistorialFragment.class){
+            info.setBackgroundResource(R.drawable.btn_bg);
+            info.setTextColor(fragment.getActivity().getResources().getColor(R.color.text_icons));
+        }
+
         info.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
